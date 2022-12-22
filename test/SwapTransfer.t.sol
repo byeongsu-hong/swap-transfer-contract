@@ -4,8 +4,8 @@ pragma solidity ^0.8.13;
 import "forge-std/Test.sol";
 import {console} from "forge-std/console.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import {UniswapV2Factory, UniswapV2Pair} from "@uniswap/UniswapV2Factory.sol";
 
-import {UniswapV2Factory, UniswapV2Pair} from "./contracts/UniswapV2Factory.sol";
 import "../src/Counter.sol";
 
 contract AToken is ERC20 {
