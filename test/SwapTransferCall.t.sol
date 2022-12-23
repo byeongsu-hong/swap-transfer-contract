@@ -36,6 +36,8 @@ contract SwapTransferTest is Test {
         w_ETH = new ERC20Mock("WETH", "WETH");
 
         factory = new UniswapV2Factory(address(this));
+        // factory.setFeeTo(address(this));
+
         router = new UniswapV2Router02(address(factory), address(w_ETH));
 
         testContract = new SwapTransferCall();
@@ -77,19 +79,19 @@ contract SwapTransferTest is Test {
     function testAddLiquidity() public {
         factory.createPair(address(aToken), address(bToken));
 
-        aToken.mintInternal(address(this), 1_000);
-        bToken.mintInternal(address(this), 1_000);
+        aToken.mintInternal(address(this), 10_000);
+        bToken.mintInternal(address(this), 10_000);
 
-        aToken.approve(address(router), 1_000);
-        bToken.approve(address(router), 1_000);
+        aToken.approve(address(router), 10_000);
+        bToken.approve(address(router), 10_000);
 
         router.addLiquidity(
             address(aToken),
             address(bToken),
-            1_000,
-            1_000,
-            1_000,
-            1_000,
+            10_000,
+            5_000,
+            0,
+            0,
             address(this),
             block.timestamp
         );

@@ -1,7 +1,10 @@
 pragma solidity >0.6.6;
 
+import {console} from "forge-std/console.sol";
+
 import "@uniswap/interfaces/IUniswapV2Factory.sol";
-import "lib/TransferHelper.sol";
+
+import "../TransferHelper.sol";
 
 import "./interfaces/IUniswapV2Router02.sol";
 import "./libraries/UniswapV2Library.sol";
@@ -104,7 +107,9 @@ contract UniswapV2Router02 {
             amountAMin,
             amountBMin
         );
-        address pair = UniswapV2Library.pairFor(factory, tokenA, tokenB);
+        // XXX: Getting from UniswapLibrary to getPair was the original code, but I change it because it spits out a different address.
+        address pair = UniswapV2Factory(factory).getPair(tokenA, tokenB);
+        // address pair = UniswapV2Library.pairFor(factory, tokenA, tokenB);
         TransferHelper.safeTransferFrom(tokenA, msg.sender, pair, amountA);
         TransferHelper.safeTransferFrom(tokenB, msg.sender, pair, amountB);
         liquidity = IUniswapV2Pair(pair).mint(to);

@@ -1,7 +1,5 @@
 pragma solidity >=0.5.0;
 
-import {console} from "forge-std/console.sol";
-
 import "../interfaces/IUniswapV2Pair.sol";
 import "./SafeMath.sol";
 import "../UniswapV2Factory.sol";
@@ -54,7 +52,6 @@ library UniswapV2Library {
     ) internal view returns (uint256 reserveA, uint256 reserveB) {
         (address token0, ) = sortTokens(tokenA, tokenB);
 
-        console.log("pair address: ", pairFor(factory, tokenA, tokenB));
         (uint256 reserve0, uint256 reserve1, ) = IUniswapV2Pair(
             pairFor(factory, tokenA, tokenB)
         ).getReserves();
