@@ -1,9 +1,10 @@
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.13;
+pragma solidity >=0.5.0;
 
-import {SafeMath} from "lib/SafeMath.sol";
+import {console} from "forge-std/console.sol";
 
-import {IUniswapV2Pair} from "./UniswapV2Pair.sol";
+import "../interfaces/IUniswapV2Pair.sol";
+import "./SafeMath.sol";
+import "../UniswapV2Factory.sol";
 
 library UniswapV2Library {
     using SafeMath for uint256;
@@ -28,6 +29,7 @@ library UniswapV2Library {
         address tokenB
     ) internal pure returns (address pair) {
         (address token0, address token1) = sortTokens(tokenA, tokenB);
+
         pair = address(
             uint160(
                 uint256(
@@ -51,6 +53,8 @@ library UniswapV2Library {
         address tokenB
     ) internal view returns (uint256 reserveA, uint256 reserveB) {
         (address token0, ) = sortTokens(tokenA, tokenB);
+
+        console.log("pair address: ", pairFor(factory, tokenA, tokenB));
         (uint256 reserve0, uint256 reserve1, ) = IUniswapV2Pair(
             pairFor(factory, tokenA, tokenB)
         ).getReserves();
