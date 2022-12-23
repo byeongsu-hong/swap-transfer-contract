@@ -53,7 +53,7 @@ library UniswapV2Library {
         (address token0, ) = sortTokens(tokenA, tokenB);
 
         (uint256 reserve0, uint256 reserve1, ) = IUniswapV2Pair(
-            pairFor(factory, tokenA, tokenB)
+            UniswapV2Factory(factory).getPair(tokenA, tokenB)
         ).getReserves();
         (reserveA, reserveB) = tokenA == token0
             ? (reserve0, reserve1)

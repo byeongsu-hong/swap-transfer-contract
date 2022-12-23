@@ -353,9 +353,9 @@ contract UniswapV2Router02 {
                 ? (uint256(0), amountOut)
                 : (amountOut, uint256(0));
             address to = i < path.length - 2
-                ? UniswapV2Library.pairFor(factory, output, path[i + 2])
+                ? UniswapV2Factory(factory).getPair(output, path[i + 2])
                 : _to;
-            IUniswapV2Pair(UniswapV2Library.pairFor(factory, input, output))
+            IUniswapV2Pair(UniswapV2Factory(factory).getPair(input, output))
                 .swap(amount0Out, amount1Out, to, new bytes(0));
         }
     }
@@ -367,17 +367,14 @@ contract UniswapV2Router02 {
         address to,
         uint256 deadline
     ) external virtual ensure(deadline) returns (uint256[] memory amounts) {
+        address pair = UniswapV2Factory(factory).getPair(path[0], path[1]);
+
         amounts = UniswapV2Library.getAmountsOut(factory, amountIn, path);
         require(
             amounts[amounts.length - 1] >= amountOutMin,
             "UniswapV2Router: INSUFFICIENT_OUTPUT_AMOUNT"
         );
-        TransferHelper.safeTransferFrom(
-            path[0],
-            msg.sender,
-            UniswapV2Library.pairFor(factory, path[0], path[1]),
-            amounts[0]
-        );
+        TransferHelper.safeTransferFrom(path[0], msg.sender, pair, amounts[0]);
         _swap(amounts, path, to);
     }
 

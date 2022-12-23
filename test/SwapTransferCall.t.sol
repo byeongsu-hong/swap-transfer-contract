@@ -96,4 +96,40 @@ contract SwapTransferTest is Test {
             block.timestamp
         );
     }
+
+    function testSwap() public {
+        factory.createPair(address(aToken), address(bToken));
+
+        aToken.mintInternal(address(this), 100_000);
+        bToken.mintInternal(address(this), 100_000);
+
+        aToken.approve(address(router), 100_000);
+        bToken.approve(address(router), 100_000);
+
+        router.addLiquidity(
+            address(aToken),
+            address(bToken),
+            100_000,
+            5_000,
+            0,
+            0,
+            address(this),
+            block.timestamp
+        );
+
+        aToken.mintInternal(address(this), 100_000);
+        aToken.approve(address(router), 100_000);
+
+        address[] memory addrs = new address[](2);
+        addrs[0] = address(aToken);
+        addrs[1] = address(bToken);
+
+        router.swapExactTokensForTokens(
+            1_000,
+            10,
+            addrs,
+            address(this),
+            block.timestamp
+        );
+    }
 }
