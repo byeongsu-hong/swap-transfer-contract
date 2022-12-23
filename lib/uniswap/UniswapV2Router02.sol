@@ -44,6 +44,7 @@ contract UniswapV2Router02 {
         }
 
         address pairAddress = UniswapV2Factory(factory).getPair(tokenA, tokenB);
+        // XXX: Getting from UniswapLibrary to getPair was the original code, but I change it because it spits out a different address.
         (uint256 reserveA, uint256 reserveB, ) = UniswapV2Pair(pairAddress)
             .getReserves();
         if (reserveA == 0 && reserveB == 0) {
