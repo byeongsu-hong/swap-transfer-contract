@@ -95,41 +95,52 @@ contract SwapTransferTest is Test {
             address(this),
             block.timestamp
         );
+
+        assertEq(aToken.balanceOf(address(this)), 0);
+        assertEq(bToken.balanceOf(address(this)), 5_000);
     }
 
     function testSwap() public {
         factory.createPair(address(aToken), address(bToken));
 
         aToken.mintInternal(address(this), 100_000);
-        bToken.mintInternal(address(this), 100_000);
+        bToken.mintInternal(address(this), 50_000);
 
         aToken.approve(address(router), 100_000);
-        bToken.approve(address(router), 100_000);
+        bToken.approve(address(router), 50_000);
 
         router.addLiquidity(
             address(aToken),
             address(bToken),
             100_000,
-            5_000,
+            50_000,
             0,
             0,
             address(this),
             block.timestamp
         );
 
+        assertEq(aToken.balanceOf(address(this)), 0);
+        assertEq(bToken.balanceOf(address(this)), 0);
+
         aToken.mintInternal(address(this), 100_000);
         aToken.approve(address(router), 100_000);
+
+        assertEq(aToken.balanceOf(address(this)), 100_000);
 
         address[] memory addrs = new address[](2);
         addrs[0] = address(aToken);
         addrs[1] = address(bToken);
 
-        router.swapExactTokensForTokens(
+        router.swapTokensForExactTokens(
             1_000,
-            10,
+            3_000,
             addrs,
             address(this),
             block.timestamp
         );
+
+        assertEq(aToken.balanceOf(address(this)), 97_953);
+        assertEq(bToken.balanceOf(address(this)), 1_000);
     }
 }

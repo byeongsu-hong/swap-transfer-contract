@@ -393,7 +393,7 @@ contract UniswapV2Router02 {
         TransferHelper.safeTransferFrom(
             path[0],
             msg.sender,
-            UniswapV2Library.pairFor(factory, path[0], path[1]),
+            UniswapV2Factory(factory).getPair(path[0], path[1]),
             amounts[0]
         );
         _swap(amounts, path, to);
