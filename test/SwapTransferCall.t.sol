@@ -9,6 +9,11 @@ import {UniswapV2Router02} from "@uniswap/UniswapV2Router02.sol";
 
 import {SwapTransferCall} from "../src/SwapTransferCall.sol";
 
+interface CheatCodes {
+    // Gets address for a given private key, (privateKey) => (address)
+    function addr(uint256) external returns (address);
+}
+
 contract ERC20Mock is ERC20 {
     constructor(string memory _name, string memory _symbol)
         ERC20(_name, _symbol)
@@ -142,5 +147,52 @@ contract SwapTransferTest is Test {
 
         assertEq(aToken.balanceOf(address(this)), 97_953);
         assertEq(bToken.balanceOf(address(this)), 1_000);
+    }
+
+    function testSwapTransferCall() public {
+        factory.createPair(address(aToken), address(bToken));
+
+        aToken.mintInternal(address(this), 100_000);
+        bToken.mintInternal(address(this), 50_000);
+
+        aToken.approve(address(router), 100_000);
+        bToken.approve(address(router), 50_000);
+
+        router.addLiquidity(
+            address(aToken),
+            address(bToken),
+            100_000,
+            50_000,
+            0,
+            0,
+            address(this),
+            block.timestamp
+        );
+
+        assertEq(aToken.balanceOf(address(this)), 0);
+        assertEq(bToken.balanceOf(address(this)), 0);
+
+        aToken.mintInternal(address(this), 3_000);
+
+        assertEq(aToken.balanceOf(address(this)), 3_000);
+
+        address[] memory path = new address[](2);
+        path[0] = address(aToken);
+        path[1] = address(bToken);
+
+        aToken.approve(address(testContract), 3_000);
+
+        CheatCodes cheats = CheatCodes(HEVM_ADDRESS);
+        address fromAddr = cheats.addr(1);
+
+        testContract.swapTransferCall(
+            address(router),
+            path,
+            1_000,
+            3_000,
+            address(fromAddr)
+        );
+
+        assertEq(bToken.balanceOf(address(fromAddr)), 1_000);
     }
 }
