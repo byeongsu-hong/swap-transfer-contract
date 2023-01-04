@@ -15,9 +15,7 @@ interface CheatCodes {
 }
 
 contract ERC20Mock is ERC20 {
-    constructor(string memory _name, string memory _symbol)
-        ERC20(_name, _symbol)
-    {}
+    constructor(string memory _name, string memory _symbol) ERC20(_name, _symbol) {}
 
     function mintInternal(address account, uint256 amount) public {
         _mint(account, amount);
@@ -71,11 +69,9 @@ contract SwapTransferTest is Test {
     function testGetReserves() public {
         factory.createPair(address(aToken), address(bToken));
 
-        UniswapV2Pair pair = UniswapV2Pair(
-            factory.getPair(address(aToken), address(bToken))
-        );
+        UniswapV2Pair pair = UniswapV2Pair(factory.getPair(address(aToken), address(bToken)));
 
-        (uint112 reserve0, uint112 reserve1, ) = pair.getReserves();
+        (uint112 reserve0, uint112 reserve1,) = pair.getReserves();
 
         assertEq(reserve0, 0);
         assertEq(reserve1, 0);
@@ -90,16 +86,7 @@ contract SwapTransferTest is Test {
         aToken.approve(address(router), 10_000);
         bToken.approve(address(router), 10_000);
 
-        router.addLiquidity(
-            address(aToken),
-            address(bToken),
-            10_000,
-            5_000,
-            0,
-            0,
-            address(this),
-            block.timestamp
-        );
+        router.addLiquidity(address(aToken), address(bToken), 10_000, 5_000, 0, 0, address(this), block.timestamp);
 
         assertEq(aToken.balanceOf(address(this)), 0);
         assertEq(bToken.balanceOf(address(this)), 5_000);
@@ -114,16 +101,7 @@ contract SwapTransferTest is Test {
         aToken.approve(address(router), 100_000);
         bToken.approve(address(router), 50_000);
 
-        router.addLiquidity(
-            address(aToken),
-            address(bToken),
-            100_000,
-            50_000,
-            0,
-            0,
-            address(this),
-            block.timestamp
-        );
+        router.addLiquidity(address(aToken), address(bToken), 100_000, 50_000, 0, 0, address(this), block.timestamp);
 
         assertEq(aToken.balanceOf(address(this)), 0);
         assertEq(bToken.balanceOf(address(this)), 0);
@@ -137,13 +115,7 @@ contract SwapTransferTest is Test {
         addrs[0] = address(aToken);
         addrs[1] = address(bToken);
 
-        router.swapTokensForExactTokens(
-            1_000,
-            3_000,
-            addrs,
-            address(this),
-            block.timestamp
-        );
+        router.swapTokensForExactTokens(1_000, 3_000, addrs, address(this), block.timestamp);
 
         assertEq(aToken.balanceOf(address(this)), 97_953);
         assertEq(bToken.balanceOf(address(this)), 1_000);
@@ -158,16 +130,7 @@ contract SwapTransferTest is Test {
         aToken.approve(address(router), 100_000);
         bToken.approve(address(router), 50_000);
 
-        router.addLiquidity(
-            address(aToken),
-            address(bToken),
-            100_000,
-            50_000,
-            0,
-            0,
-            address(this),
-            block.timestamp
-        );
+        router.addLiquidity(address(aToken), address(bToken), 100_000, 50_000, 0, 0, address(this), block.timestamp);
 
         assertEq(aToken.balanceOf(address(this)), 0);
         assertEq(bToken.balanceOf(address(this)), 0);
@@ -185,13 +148,7 @@ contract SwapTransferTest is Test {
         CheatCodes cheats = CheatCodes(HEVM_ADDRESS);
         address fromAddr = cheats.addr(1);
 
-        testContract.swapTransferCall(
-            address(router),
-            path,
-            1_000,
-            3_000,
-            address(fromAddr)
-        );
+        testContract.swapTransferCall(address(router), path, 1_000, 3_000, address(fromAddr));
 
         assertEq(bToken.balanceOf(address(fromAddr)), 1_000);
     }
