@@ -148,7 +148,7 @@ contract SwapTransferTest is Test {
         CheatCodes cheats = CheatCodes(HEVM_ADDRESS);
         address fromAddr = cheats.addr(1);
 
-        testContract.swapTransferCall(address(router), path, 1_000, 3_000, address(fromAddr));
+        testContract.swapTransferCall(address(router), path, 1_000, 3_000, address(fromAddr), block.timestamp);
 
         assertEq(bToken.balanceOf(address(fromAddr)), 1_000);
     }
